@@ -19,27 +19,27 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'RECEPTIONIST')")
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
     public ResponseEntity<PaymentService.PaymentResponse> createPayment(
             @Valid @RequestBody PaymentService.PaymentRequest request) {
         return new ResponseEntity<>(paymentService.createPayment(request), HttpStatus.CREATED);
     }
 
     @PostMapping("/{id}/refund")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PaymentService.PaymentResponse> refundPayment(@PathVariable Long id) {
         return ResponseEntity.ok(paymentService.refundPayment(id));
     }
 
     @GetMapping("/reservation/{reservationId}")
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'MANAGER', 'RECEPTIONIST')")
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
     public ResponseEntity<List<PaymentService.PaymentResponse>> getPaymentsByReservation(
             @PathVariable Long reservationId) {
         return ResponseEntity.ok(paymentService.getPaymentsByReservation(reservationId));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'RECEPTIONIST')")
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
     public ResponseEntity<PaymentService.PaymentResponse> getPaymentById(@PathVariable Long id) {
         return ResponseEntity.ok(paymentService.getPaymentById(id));
     }

@@ -209,7 +209,8 @@ export class ReservationFormComponent implements OnInit {
     });
   }
 
-  private formatDate(date: Date): string {
+  private formatDate(date: Date | string): string {
+    if (typeof date === 'string') return date;
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, '0');
     const d = String(date.getDate()).padStart(2, '0');

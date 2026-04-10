@@ -15,84 +15,207 @@ import { ReservationResponse } from '../../models/reservation.model';
   selector: 'app-admin-dashboard',
   standalone: true,
   imports: [CommonModule, RouterModule, MatCardModule, MatButtonModule, MatIconModule, MatTableModule, MatChipsModule],
+  styles: [`
+    .admin-page {
+      background: #F5F0E8;
+      min-height: calc(100vh - 64px);
+      padding: 32px 24px;
+    }
+    .page-header {
+      margin-bottom: 32px;
+    }
+    .page-header h1 {
+      margin: 0 0 4px;
+      font-size: 26px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      color: #2D5016;
+    }
+    .page-header p {
+      margin: 0;
+      color: #6B4C36;
+      font-size: 13px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      border-radius: 12px !important;
+      border-left: 4px solid transparent;
+      background: white !important;
+    }
+    .stat-inner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px !important;
+    }
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .stat-icon mat-icon {
+      font-size: 26px;
+      width: 26px;
+      height: 26px;
+      color: white;
+    }
+    .stat-info h2 {
+      margin: 0 0 2px;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .stat-info p {
+      margin: 0;
+      font-size: 12px;
+      color: #888;
+    }
+    .quick-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    .section-header {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 16px;
+      color: #1a1a2e;
+    }
+    .table-card {
+      border-radius: 12px !important;
+      overflow: hidden;
+    }
+    table { width: 100%; }
+    th.mat-header-cell {
+      font-weight: 600 !important;
+      color: #555 !important;
+      font-size: 12px !important;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .status-pill {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: white;
+      display: inline-block;
+    }
+  `],
   template: `
-    <div style="padding:24px;max-width:1100px;margin:0 auto">
-      <h1>Admin Dashboard</h1>
+    <div class="admin-page">
+      <div style="max-width:1100px;margin:0 auto">
+        <div class="page-header">
+          <h1>Admin Dashboard</h1>
+          <p>Hotel operations overview</p>
+        </div>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:32px">
-        <mat-card>
-          <mat-card-content style="text-align:center;padding:24px">
-            <mat-icon style="font-size:40px;width:40px;height:40px;color:#3f51b5">hotel</mat-icon>
-            <h2 style="margin:8px 0 0">{{ totalRooms }}</h2>
-            <p style="color:#666;margin:0">Total Rooms</p>
-          </mat-card-content>
-        </mat-card>
-        <mat-card>
-          <mat-card-content style="text-align:center;padding:24px">
-            <mat-icon style="font-size:40px;width:40px;height:40px;color:#4caf50">check_circle</mat-icon>
-            <h2 style="margin:8px 0 0">{{ availableRooms }}</h2>
-            <p style="color:#666;margin:0">Available</p>
-          </mat-card-content>
-        </mat-card>
-        <mat-card>
-          <mat-card-content style="text-align:center;padding:24px">
-            <mat-icon style="font-size:40px;width:40px;height:40px;color:#f44336">do_not_disturb</mat-icon>
-            <h2 style="margin:8px 0 0">{{ occupiedRooms }}</h2>
-            <p style="color:#666;margin:0">Occupied</p>
-          </mat-card-content>
-        </mat-card>
-        <mat-card>
-          <mat-card-content style="text-align:center;padding:24px">
-            <mat-icon style="font-size:40px;width:40px;height:40px;color:#ff9800">pending_actions</mat-icon>
-            <h2 style="margin:8px 0 0">{{ pendingReservations }}</h2>
-            <p style="color:#666;margin:0">Pending Reservations</p>
-          </mat-card-content>
+        <div class="stats-grid">
+          <mat-card class="stat-card" style="border-left-color:#1976d2">
+            <mat-card-content class="stat-inner">
+              <div class="stat-icon" style="background:#1976d2">
+                <mat-icon>hotel</mat-icon>
+              </div>
+              <div class="stat-info">
+                <h2>{{ totalRooms }}</h2>
+                <p>Total Rooms</p>
+              </div>
+            </mat-card-content>
+          </mat-card>
+          <mat-card class="stat-card" style="border-left-color:#4caf50">
+            <mat-card-content class="stat-inner">
+              <div class="stat-icon" style="background:#4caf50">
+                <mat-icon>check_circle</mat-icon>
+              </div>
+              <div class="stat-info">
+                <h2>{{ availableRooms }}</h2>
+                <p>Available</p>
+              </div>
+            </mat-card-content>
+          </mat-card>
+          <mat-card class="stat-card" style="border-left-color:#f44336">
+            <mat-card-content class="stat-inner">
+              <div class="stat-icon" style="background:#f44336">
+                <mat-icon>do_not_disturb</mat-icon>
+              </div>
+              <div class="stat-info">
+                <h2>{{ occupiedRooms }}</h2>
+                <p>Occupied</p>
+              </div>
+            </mat-card-content>
+          </mat-card>
+          <mat-card class="stat-card" style="border-left-color:#ff9800">
+            <mat-card-content class="stat-inner">
+              <div class="stat-icon" style="background:#ff9800">
+                <mat-icon>pending_actions</mat-icon>
+              </div>
+              <div class="stat-info">
+                <h2>{{ pendingReservations }}</h2>
+                <p>Pending</p>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <div class="quick-actions">
+          <button mat-raised-button routerLink="/rooms/new" style="background:#2D5016;color:white;border-radius:100px">
+            <mat-icon>add</mat-icon> Add Room
+          </button>
+          <button mat-raised-button routerLink="/reservations" style="background:#C9931A;color:white;border-radius:100px">
+            <mat-icon>assignment</mat-icon> Manage Reservations
+          </button>
+          <button mat-raised-button routerLink="/rooms" style="background:#4A7A25;color:white;border-radius:100px">
+            <mat-icon>meeting_room</mat-icon> Manage Rooms
+          </button>
+        </div>
+
+        <div class="section-header">Recent Reservations</div>
+        <mat-card class="table-card">
+          @if (recentReservations.length > 0) {
+            <table mat-table [dataSource]="recentReservations">
+              <ng-container matColumnDef="reservationNumber">
+                <th mat-header-cell *matHeaderCellDef>Reservation #</th>
+                <td mat-cell *matCellDef="let r">{{ r.reservationNumber }}</td>
+              </ng-container>
+              <ng-container matColumnDef="userName">
+                <th mat-header-cell *matHeaderCellDef>Guest</th>
+                <td mat-cell *matCellDef="let r">{{ r.userName }}</td>
+              </ng-container>
+              <ng-container matColumnDef="roomNumber">
+                <th mat-header-cell *matHeaderCellDef>Room</th>
+                <td mat-cell *matCellDef="let r">{{ r.roomNumber }}</td>
+              </ng-container>
+              <ng-container matColumnDef="checkIn">
+                <th mat-header-cell *matHeaderCellDef>Check-in</th>
+                <td mat-cell *matCellDef="let r">{{ r.checkInDate }}</td>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let r">
+                  <span class="status-pill" [style.background]="getStatusColor(r.status)">{{ r.status }}</span>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="recentColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: recentColumns"></tr>
+            </table>
+          } @else {
+            <div style="padding:32px;text-align:center;color:#999">
+              <mat-icon style="font-size:40px;width:40px;height:40px;opacity:0.4">assignment</mat-icon>
+              <p style="margin:8px 0 0">No reservations yet</p>
+            </div>
+          }
         </mat-card>
       </div>
-
-      <div style="display:flex;gap:16px;margin-bottom:32px">
-        <button mat-raised-button color="primary" routerLink="/rooms/new">
-          <mat-icon>add</mat-icon> Add Room
-        </button>
-        <button mat-raised-button routerLink="/reservations">
-          <mat-icon>assignment</mat-icon> Manage Reservations
-        </button>
-        <button mat-raised-button routerLink="/rooms">
-          <mat-icon>hotel</mat-icon> Manage Rooms
-        </button>
-      </div>
-
-      <h2>Recent Reservations</h2>
-      @if (recentReservations.length > 0) {
-        <table mat-table [dataSource]="recentReservations" style="width:100%">
-          <ng-container matColumnDef="reservationNumber">
-            <th mat-header-cell *matHeaderCellDef>Reservation #</th>
-            <td mat-cell *matCellDef="let r">{{ r.reservationNumber }}</td>
-          </ng-container>
-          <ng-container matColumnDef="userName">
-            <th mat-header-cell *matHeaderCellDef>Guest</th>
-            <td mat-cell *matCellDef="let r">{{ r.userName }}</td>
-          </ng-container>
-          <ng-container matColumnDef="roomNumber">
-            <th mat-header-cell *matHeaderCellDef>Room</th>
-            <td mat-cell *matCellDef="let r">{{ r.roomNumber }}</td>
-          </ng-container>
-          <ng-container matColumnDef="checkIn">
-            <th mat-header-cell *matHeaderCellDef>Check-in</th>
-            <td mat-cell *matCellDef="let r">{{ r.checkInDate }}</td>
-          </ng-container>
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>Status</th>
-            <td mat-cell *matCellDef="let r">
-              <span [style.color]="getStatusColor(r.status)" style="font-weight:500">{{ r.status }}</span>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="recentColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: recentColumns"></tr>
-        </table>
-      } @else {
-        <p style="color:#666">No reservations yet.</p>
-      }
     </div>
   `
 })
@@ -111,10 +234,9 @@ export class AdminDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.roomService.getAllRooms(0, 100).subscribe(page => {
-      const rooms = page.content;
-      this.totalRooms = rooms.length;
-      this.availableRooms = rooms.filter(r => r.status === 'AVAILABLE').length;
-      this.occupiedRooms = rooms.filter(r => r.status === 'OCCUPIED').length;
+      this.totalRooms = page.totalElements;
+      this.availableRooms = page.content.filter(r => r.status === 'AVAILABLE').length;
+      this.occupiedRooms = page.content.filter(r => r.status === 'OCCUPIED').length;
     });
 
     this.reservationService.getAllReservations(0, 10).subscribe(page => {

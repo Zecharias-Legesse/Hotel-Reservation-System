@@ -13,5 +13,6 @@ export const routes: Routes = [
   { path: 'reservations/new', loadComponent: () => import('./components/reservation-form/reservation-form.component').then(m => m.ReservationFormComponent), canActivate: [authGuard] },
   { path: 'payments/:reservationId', loadComponent: () => import('./components/payments/payments.component').then(m => m.PaymentsComponent), canActivate: [authGuard] },
   { path: 'admin', loadComponent: () => import('./components/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent), canActivate: [staffGuard] },
+  { path: 'profile', loadComponent: () => import('./components/profile/profile.component').then(m => m.ProfileComponent), canActivate: [authGuard] },
   { path: '**', redirectTo: '/dashboard' }
 ];

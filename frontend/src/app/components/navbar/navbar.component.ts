@@ -12,32 +12,124 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-navbar',
   standalone: true,
   imports: [CommonModule, RouterModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule],
+  styles: [`
+    mat-toolbar {
+      height: 64px;
+      background: #2D5016 !important;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25) !important;
+    }
+    .brand {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: white;
+    }
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(201,147,26,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+    .brand-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .brand-sub {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      opacity: 0.7;
+      text-transform: uppercase;
+    }
+    .nav-btn {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      color: rgba(255,255,255,0.9) !important;
+    }
+    .nav-btn:hover { color: white !important; }
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: white;
+    }
+    .menu-header {
+      padding: 12px 16px 10px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 4px;
+    }
+    .menu-name { font-weight: 600; font-size: 14px; color: #2D5016; }
+    .menu-role { font-size: 11px; color: #888; margin-top: 2px; }
+    .register-btn {
+      background: #C9931A !important;
+      color: white !important;
+      border-radius: 100px !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+    }
+  `],
   template: `
-    <mat-toolbar color="primary">
-      <span routerLink="/dashboard" style="cursor:pointer">Hotel Reservation</span>
+    <mat-toolbar>
+      <span class="brand" routerLink="/dashboard">
+        <div class="brand-icon">🌿</div>
+        <div class="brand-text">
+          <span class="brand-name">Kereyu</span>
+          <span class="brand-sub">Hill Resort Hotel</span>
+        </div>
+      </span>
       <span style="flex:1"></span>
       @if (auth.isLoggedIn()) {
-        <button mat-button routerLink="/rooms">Rooms</button>
+        <button mat-button class="nav-btn" routerLink="/rooms">Rooms</button>
         @if (auth.isStaff()) {
-          <button mat-button routerLink="/admin">Admin</button>
-          <button mat-button routerLink="/reservations">All Reservations</button>
+          <button mat-button class="nav-btn" routerLink="/admin">Dashboard</button>
+          <button mat-button class="nav-btn" routerLink="/reservations">Reservations</button>
         } @else {
-          <button mat-button routerLink="/reservations">My Reservations</button>
+          <button mat-button class="nav-btn" routerLink="/reservations">My Reservations</button>
         }
-        <button mat-icon-button [matMenuTriggerFor]="menu">
-          <mat-icon>account_circle</mat-icon>
+        <button mat-button [matMenuTriggerFor]="menu" style="margin-left:8px">
+          <div class="user-chip">
+            <mat-icon>account_circle</mat-icon>
+            <span>{{ (auth.currentUser$ | async)?.username }}</span>
+          </div>
         </button>
         <mat-menu #menu="matMenu">
-          <div style="padding:0 16px;font-weight:500">{{ (auth.currentUser$ | async)?.username }}</div>
-          <div style="padding:0 16px 8px;font-size:12px;color:#666">{{ (auth.currentUser$ | async)?.roles?.join(', ') }}</div>
+          <div class="menu-header">
+            <div class="menu-name">{{ (auth.currentUser$ | async)?.username }}</div>
+            <div class="menu-role">{{ (auth.currentUser$ | async)?.roles?.join(', ') }}</div>
+          </div>
+          <button mat-menu-item routerLink="/profile">
+            <mat-icon>manage_accounts</mat-icon> My Profile
+          </button>
           <mat-divider></mat-divider>
           <button mat-menu-item (click)="logout()">
-            <mat-icon>logout</mat-icon> Logout
+            <mat-icon>logout</mat-icon> Sign Out
           </button>
         </mat-menu>
       } @else {
-        <button mat-button routerLink="/login">Login</button>
-        <button mat-raised-button routerLink="/register">Register</button>
+        <button mat-button class="nav-btn" routerLink="/login">Login</button>
+        <button mat-raised-button class="register-btn" routerLink="/register" style="margin-left:8px">Register</button>
       }
     </mat-toolbar>
   `

@@ -62,6 +62,7 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/api/reservations/approve/**").hasRole("ADMIN")
                 .requestMatchers("/api/users/**").hasRole("ADMIN")
+                .requestMatchers("/api/profile/**").authenticated()
                 .requestMatchers("/api/reservations/**").authenticated()
                 .requestMatchers("/api/rooms/**").authenticated()
                 .anyRequest().authenticated()
@@ -77,7 +78,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
         

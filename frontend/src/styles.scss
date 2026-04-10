@@ -1,4 +1,131 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --green-deep: #2D5016;
+  --green-light: #4A7A25;
+  --green-pale: #E8F0DC;
+  --gold: #C9931A;
+  --gold-light: #E8B84B;
+  --cream: #F5F0E8;
+  --cream-dark: #EDE5D8;
+  --brown-dark: #3D2B1F;
+  --brown-mid: #6B4C36;
+  --white: #FFFFFF;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.10);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.14);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.18);
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --transition: 0.2s ease;
+}
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  background: var(--cream);
+  color: var(--brown-dark);
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* Override Material primary color throughout */
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-fab.mat-primary,
+.mat-mdc-mini-fab.mat-primary {
+  background-color: var(--green-deep) !important;
+}
+.mat-mdc-raised-button.mat-primary:hover {
+  background-color: var(--green-light) !important;
+}
+.mat-mdc-outlined-button.mat-primary {
+  color: var(--green-deep) !important;
+  border-color: var(--green-deep) !important;
+}
+.mat-mdc-button.mat-primary { color: var(--green-deep) !important; }
+.mat-mdc-checkbox.mat-primary, .mat-mdc-radio-button.mat-primary { --mdc-theme-primary: var(--green-deep); }
+.mat-primary .mat-mdc-select-arrow { color: var(--green-deep) !important; }
+.mdc-text-field--focused .mdc-floating-label { color: var(--green-deep) !important; }
+.mdc-text-field--focused .mdc-notched-outline__leading,
+.mdc-text-field--focused .mdc-notched-outline__notch,
+.mdc-text-field--focused .mdc-notched-outline__trailing {
+  border-color: var(--green-deep) !important;
+}
+.mat-mdc-form-field.mat-focused .mat-mdc-select-arrow { color: var(--green-deep) !important; }
+.mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text {
+  color: var(--green-deep) !important;
+}
+.mat-pseudo-checkbox-checked { background: var(--green-deep) !important; }
+
+/* Cards */
+mat-card {
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: box-shadow var(--transition), transform var(--transition) !important;
+  background: var(--white) !important;
+}
+mat-card:hover {
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-2px);
+}
+
+/* Toolbar override */
+mat-toolbar.mat-toolbar {
+  background: var(--green-deep) !important;
+  color: white !important;
+}
+
+/* Snackbar */
+.mat-mdc-snack-bar-container { border-radius: var(--radius-sm) !important; }
+
+/* Chips */
+.mat-mdc-chip { border-radius: 100px !important; }
+
+/* Table rows */
+tr.mat-mdc-row:hover { background: var(--green-pale) !important; }
+th.mat-header-cell {
+  font-weight: 600 !important;
+  color: var(--brown-mid) !important;
+  font-size: 11px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  background: #faf9f7 !important;
+}
+
+/* Expansion panel */
+.mat-expansion-panel {
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+/* Status pills */
+.status-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 0.3px;
+}
+
+/* Gold accent divider */
+.gold-divider {
+  width: 48px;
+  height: 2px;
+  background: var(--gold);
+  margin: 8px 0;
+}
+
+/* Feature pill */
+.feature-pill {
+  background: var(--green-pale);
+  color: var(--green-deep);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+}

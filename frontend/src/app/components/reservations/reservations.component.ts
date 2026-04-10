@@ -19,108 +19,189 @@ import { ReservationResponse, ReservationStatus } from '../../models/reservation
   selector: 'app-reservations',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, MatCardModule, MatTableModule, MatButtonModule, MatChipsModule, MatSnackBarModule, MatIconModule, MatSelectModule, MatFormFieldModule, MatTooltipModule],
+  styles: [`
+    .reservations-page {
+      background: #F5F0E8;
+      min-height: calc(100vh - 64px);
+      padding: 32px 24px;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .page-header h1 {
+      margin: 0;
+      font-size: 26px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      color: #2D5016;
+    }
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .table-card {
+      border-radius: 12px !important;
+      overflow: hidden;
+    }
+    table { width: 100%; }
+    tr.mat-mdc-row:hover { background: #f9f9ff; }
+    th.mat-header-cell {
+      font-weight: 600 !important;
+      color: #555 !important;
+      font-size: 12px !important;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    td.mat-cell { font-size: 14px; }
+    .status-pill {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: white;
+      white-space: nowrap;
+    }
+    .payment-pill {
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      background: #f0f0f0;
+      color: #555;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      color: #999;
+    }
+    .empty-state mat-icon {
+      font-size: 56px;
+      width: 56px;
+      height: 56px;
+      opacity: 0.3;
+    }
+  `],
   template: `
-    <div style="padding:24px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <h2>{{ isStaff ? 'All Reservations' : 'My Reservations' }}</h2>
-        <div style="display:flex;gap:16px;align-items:center">
-          @if (isStaff) {
-            <mat-form-field appearance="outline" style="width:180px">
-              <mat-label>Filter by Status</mat-label>
-              <mat-select [(value)]="statusFilter" (selectionChange)="filterReservations()">
-                <mat-option value="ALL">All</mat-option>
-                <mat-option value="PENDING">Pending</mat-option>
-                <mat-option value="CONFIRMED">Confirmed</mat-option>
-                <mat-option value="CHECKED_IN">Checked In</mat-option>
-                <mat-option value="CHECKED_OUT">Checked Out</mat-option>
-                <mat-option value="CANCELLED">Cancelled</mat-option>
-                <mat-option value="REJECTED">Rejected</mat-option>
-              </mat-select>
-            </mat-form-field>
-          }
-          @if (isStaff) {
-            <a mat-raised-button color="primary" routerLink="/reservations/new">
-              <mat-icon>person_add</mat-icon> Assign Reservation
-            </a>
-          }
-          @if (!isStaff) {
-            <a mat-raised-button color="primary" routerLink="/reservations/new">New Reservation</a>
-          }
+    <div class="reservations-page">
+      <div style="max-width:1300px;margin:0 auto">
+        <div class="page-header">
+          <h1>{{ isStaff ? 'All Reservations' : 'My Reservations' }}</h1>
+          <div class="header-actions">
+            @if (isStaff) {
+              <mat-form-field appearance="outline" style="width:170px;margin:0">
+                <mat-label>Filter by Status</mat-label>
+                <mat-select [(value)]="statusFilter" (selectionChange)="filterReservations()">
+                  <mat-option value="ALL">All</mat-option>
+                  <mat-option value="PENDING">Pending</mat-option>
+                  <mat-option value="CONFIRMED">Confirmed</mat-option>
+                  <mat-option value="CHECKED_IN">Checked In</mat-option>
+                  <mat-option value="CHECKED_OUT">Checked Out</mat-option>
+                  <mat-option value="CANCELLED">Cancelled</mat-option>
+                  <mat-option value="REJECTED">Rejected</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <a mat-raised-button routerLink="/reservations/new" style="background:#2D5016;color:white;border-radius:100px">
+                <mat-icon>person_add</mat-icon> Assign Reservation
+              </a>
+            }
+            @if (!isStaff) {
+              <a mat-raised-button routerLink="/reservations/new" style="background:#2D5016;color:white;border-radius:100px">
+                <mat-icon>add</mat-icon> New Reservation
+              </a>
+            }
+          </div>
         </div>
+
+        <mat-card class="table-card">
+          @if (filteredReservations.length > 0) {
+            <table mat-table [dataSource]="filteredReservations">
+              <ng-container matColumnDef="reservationNumber">
+                <th mat-header-cell *matHeaderCellDef>Reservation #</th>
+                <td mat-cell *matCellDef="let r"><strong>{{ r.reservationNumber }}</strong></td>
+              </ng-container>
+              <ng-container matColumnDef="roomNumber">
+                <th mat-header-cell *matHeaderCellDef>Room</th>
+                <td mat-cell *matCellDef="let r">{{ r.roomNumber }}</td>
+              </ng-container>
+              @if (isStaff) {
+                <ng-container matColumnDef="userName">
+                  <th mat-header-cell *matHeaderCellDef>Guest</th>
+                  <td mat-cell *matCellDef="let r">{{ r.userName }}</td>
+                </ng-container>
+              }
+              <ng-container matColumnDef="checkIn">
+                <th mat-header-cell *matHeaderCellDef>Check-in</th>
+                <td mat-cell *matCellDef="let r">{{ r.checkInDate }}</td>
+              </ng-container>
+              <ng-container matColumnDef="checkOut">
+                <th mat-header-cell *matHeaderCellDef>Check-out</th>
+                <td mat-cell *matCellDef="let r">{{ r.checkOutDate }}</td>
+              </ng-container>
+              <ng-container matColumnDef="totalAmount">
+                <th mat-header-cell *matHeaderCellDef>Total</th>
+                <td mat-cell *matCellDef="let r"><strong>\${{ r.totalAmount }}</strong></td>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let r">
+                  <span class="status-pill" [style.background]="getStatusColor(r.status)">{{ r.status }}</span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="paymentStatus">
+                <th mat-header-cell *matHeaderCellDef>Payment</th>
+                <td mat-cell *matCellDef="let r">
+                  <span class="payment-pill">{{ r.paymentStatus }}</span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="specialRequests">
+                <th mat-header-cell *matHeaderCellDef>Requests</th>
+                <td mat-cell *matCellDef="let r">
+                  @if (r.specialRequests) {
+                    <mat-icon [matTooltip]="r.specialRequests" style="color:#1976d2;cursor:help;font-size:18px">info</mat-icon>
+                  }
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let r" style="white-space:nowrap">
+                  @if (isStaff && r.status === 'PENDING') {
+                    <button mat-stroked-button color="primary" (click)="approve(r.id, 'CONFIRMED')" style="margin-right:4px">Approve</button>
+                    <button mat-stroked-button color="warn" (click)="approve(r.id, 'REJECTED')">Reject</button>
+                  }
+                  @if (isStaff && r.status === 'CONFIRMED') {
+                    <button mat-stroked-button color="primary" (click)="approve(r.id, 'CHECKED_IN')">Check In</button>
+                  }
+                  @if (isStaff && r.status === 'CHECKED_IN') {
+                    <button mat-stroked-button (click)="approve(r.id, 'CHECKED_OUT')">Check Out</button>
+                  }
+                  @if (!isStaff && r.status === 'PENDING') {
+                    <button mat-stroked-button color="warn" (click)="cancel(r.id)">Cancel</button>
+                  }
+                  <a mat-icon-button [routerLink]="['/payments', r.id]" matTooltip="View Payments">
+                    <mat-icon>payment</mat-icon>
+                  </a>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          } @else {
+            <div class="empty-state">
+              <mat-icon>assignment</mat-icon>
+              <p>No reservations found.</p>
+            </div>
+          }
+        </mat-card>
       </div>
-
-      <table mat-table [dataSource]="filteredReservations" style="width:100%">
-        <ng-container matColumnDef="reservationNumber">
-          <th mat-header-cell *matHeaderCellDef>Reservation #</th>
-          <td mat-cell *matCellDef="let r">{{ r.reservationNumber }}</td>
-        </ng-container>
-        <ng-container matColumnDef="roomNumber">
-          <th mat-header-cell *matHeaderCellDef>Room</th>
-          <td mat-cell *matCellDef="let r">{{ r.roomNumber }}</td>
-        </ng-container>
-        @if (isStaff) {
-          <ng-container matColumnDef="userName">
-            <th mat-header-cell *matHeaderCellDef>Guest</th>
-            <td mat-cell *matCellDef="let r">{{ r.userName }}</td>
-          </ng-container>
-        }
-        <ng-container matColumnDef="checkIn">
-          <th mat-header-cell *matHeaderCellDef>Check-in</th>
-          <td mat-cell *matCellDef="let r">{{ r.checkInDate }}</td>
-        </ng-container>
-        <ng-container matColumnDef="checkOut">
-          <th mat-header-cell *matHeaderCellDef>Check-out</th>
-          <td mat-cell *matCellDef="let r">{{ r.checkOutDate }}</td>
-        </ng-container>
-        <ng-container matColumnDef="totalAmount">
-          <th mat-header-cell *matHeaderCellDef>Total</th>
-          <td mat-cell *matCellDef="let r">\${{ r.totalAmount }}</td>
-        </ng-container>
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let r">
-            <span [style.color]="getStatusColor(r.status)" style="font-weight:500">{{ r.status }}</span>
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="paymentStatus">
-          <th mat-header-cell *matHeaderCellDef>Payment</th>
-          <td mat-cell *matCellDef="let r">{{ r.paymentStatus }}</td>
-        </ng-container>
-        <ng-container matColumnDef="specialRequests">
-          <th mat-header-cell *matHeaderCellDef>Requests</th>
-          <td mat-cell *matCellDef="let r">
-            @if (r.specialRequests) {
-              <mat-icon [matTooltip]="r.specialRequests" style="color:#666;cursor:help">info</mat-icon>
-            }
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let r">
-            @if (isStaff && r.status === 'PENDING') {
-              <button mat-button color="primary" (click)="approve(r.id, 'CONFIRMED')">Approve</button>
-              <button mat-button color="warn" (click)="approve(r.id, 'REJECTED')">Reject</button>
-            }
-            @if (isStaff && r.status === 'CONFIRMED') {
-              <button mat-button color="primary" (click)="approve(r.id, 'CHECKED_IN')">Check In</button>
-            }
-            @if (isStaff && r.status === 'CHECKED_IN') {
-              <button mat-button (click)="approve(r.id, 'CHECKED_OUT')">Check Out</button>
-            }
-            @if (!isStaff && r.status === 'PENDING') {
-              <button mat-button color="warn" (click)="cancel(r.id)">Cancel</button>
-            }
-            <a mat-button [routerLink]="['/payments', r.id]">Payments</a>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-
-      @if (filteredReservations.length === 0) {
-        <p style="text-align:center;padding:24px;color:#666">No reservations found.</p>
-      }
     </div>
   `
 })
